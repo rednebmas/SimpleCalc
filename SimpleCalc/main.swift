@@ -16,69 +16,78 @@ func input() -> String {
     return result.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
 }
 
-func stringToInt(incoming:String) -> Int?
+func stringToDouble(incoming:String) -> Double?
 {
-    return Int(incoming)
+    return Double(incoming)
 }
 
-func getNumberFromInput() -> Int
+func getNumberFromInput() -> Double
 {
-    var numInt : Int? = nil
-    while numInt == nil
+    var numDouble : Double? = nil
+    while numDouble == nil
     {
         let numString = input()
-        numInt = stringToInt(numString)
-        if numInt == nil
+        numDouble = stringToDouble(numString)
+        if numDouble == nil
         {
             print("Not a number, try again")
         }
     }
     
-    return numInt!
+    return numDouble!
 }
 
 /****************************/
 /*** Arithmetic functions ***/
 /****************************/
 
-func add(firstNumber:Int)
+func add(firstNumber:Double)
 {
     let secondNumber = getNumberFromInput()
     print("= \(firstNumber + secondNumber)")
 }
 
-func subtract(firstNumber:Int)
+func subtract(firstNumber:Double)
 {
     let secondNumber = getNumberFromInput()
     print("= \(firstNumber - secondNumber)")
 }
 
-func multiply(firstNumber:Int)
+func multiply(firstNumber:Double)
 {
     let secondNumber = getNumberFromInput()
     print("= \(firstNumber * secondNumber)")
 }
 
-func divide(firstNumber:Int)
+func divide(firstNumber:Double)
 {
     let secondNumber = getNumberFromInput()
     print("= \(firstNumber / secondNumber)")
 }
 
-func mod(firstNumber:Int)
+func mod(firstNumber:Double)
 {
     let secondNumber = getNumberFromInput()
     print("= \(firstNumber % secondNumber)")
 }
 
-func factRecursive(number:Int) -> Int
+func fact(number:Double)
 {
-    if number < 0
+    if number < 0 || floor(number) != number
     {
-        print("Factorial is not defined for negative integers")
+        print("Factorial is not defined for non-natural numbers")
+        return
     }
+
+    let result = factRecursive(number)
+    print("= \(result)")
+}
+
+func factRecursive(number:Double) -> Double
+{
+
     
-    // 0 factorial = 1
+    // remember:  0! = 1
     if number < 2
     {
         return 1
@@ -87,28 +96,30 @@ func factRecursive(number:Int) -> Int
     return number * factRecursive(number - 1)
 }
 
-func average(numbers:[Int]) -> Int
+func average(numbers:[Double]) -> Double
 {
-    var sum = 0
+    var sum = 0.0
     for number in numbers
     {
         sum += number
     }
-    return sum / numbers.count
+    return sum / Double(numbers.count)
 }
 
 /**********************************/
 /*** Start of program execution ***/
 /**********************************/
 
-print("Enter an expression seperated by returns")
+print("SimpleCalc by Sam Bender")
+print("Implements extra credit opportunity for decimal values")
+print("Enter an expression seperated by returns:")
 let firstInput = getNumberFromInput()
 let secondInput = input()
-let secondInputIntOpt = stringToInt(secondInput)
+let secondInputDoubleOpt = stringToDouble(secondInput)
 
 // if the second input is a number, we just want to collect numbers until we reach an operation
 // otherwise we want to apply the operation to the next input number
-if secondInputIntOpt == nil
+if secondInputDoubleOpt == nil
 {
     switch secondInput
     {
@@ -123,7 +134,7 @@ if secondInputIntOpt == nil
         case let operation where operation == "%" || operation == "mod":
             mod(firstInput)
         case let operation where operation == "!" || operation == "fact":
-            print("\(factRecursive(firstInput))")
+            fact(firstInput)
         default:
             print("Operator not supported, exiting.")
     }
@@ -131,14 +142,15 @@ if secondInputIntOpt == nil
 else
 {
     // begin accumulating numbers
-    var numbers = [Int]()
+    var numbers = [Double]()
     numbers.append(firstInput)
+    numbers.append(secondInputDoubleOpt!)
                 
     while true
     {
         let inputString = input()
-        let inputInt = stringToInt(inputString)
-        if inputInt == nil
+        let inputDouble = stringToDouble(inputString)
+        if inputDouble == nil
         {
             switch inputString
             {
@@ -154,7 +166,7 @@ else
         }
         else
         {
-            numbers.append(inputInt!)
+            numbers.append(inputDouble!)
         }
     }
 }
